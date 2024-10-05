@@ -24,24 +24,47 @@ package cmd
 import (
 	"os"
 
+	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
+	"github.com/charmbracelet/log"
 	"github.com/spf13/cobra"
 )
 
-
+var (
+	// flags
+	logger      *log.Logger
+	verbose     bool
+	githubToken string
+)
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "go-template",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
+	Use:   "gitfamous",
+	Short: "Github Event Tracker TUI",
+	Args:  cobra.ExactArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		// flags
+		if verbose {
+			log.SetLevel(log.DebugLevel)
+		}
+		// validate flags
+		if githubToken == "" {
+			githubToken = os.Getenv("GITHUB_TOKEN")
+			if githubToken == "" {
+				githubToken = os.Getenv("GITHUB_API_TOKEN")
+			}
+		}
+		if githubToken == "" {
+			logger.Error("github API token is required")
+			os.Exit(1)
+		}
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
+		p := tea.NewProgram(initialModel(args[0], githubToken), tea.WithAltScreen())
+		if _, err := p.Run(); err != nil {
+			logger.Error("Error running gitfamous", "error", err)
+			os.Exit(1)
+		}
+	},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -54,15 +77,19 @@ func Execute() {
 }
 
 func init() {
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
+	// Override the default error level style.
+	styles := log.DefaultStyles()
+	styles.Levels[log.ErrorLevel] = lipgloss.NewStyle().
+		SetString("ERROR!!").
+		Padding(0, 1, 0, 1).
+		Background(lipgloss.Color("204")).
+		Foreground(lipgloss.Color("0"))
+	// Add a custom style for key `err`
+	styles.Keys["err"] = lipgloss.NewStyle().Foreground(lipgloss.Color("204"))
+	styles.Values["err"] = lipgloss.NewStyle().Bold(true)
+	logger = log.New(os.Stderr)
+	logger.SetStyles(styles)
 
-	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.go-template.yaml)")
-
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	rootCmd.Flags().BoolVarP(&verbose, "verbose", "V", false, "Verbose output")
+	rootCmd.Flags().StringVarP(&githubToken, "api", "t", "", "Github API Token")
 }
-
-
