@@ -295,7 +295,7 @@ func getEventDescription(event *github.Event) string {
 		}
 	case "GollumEvent":
 		if _, ok := payload.(*github.GollumEvent); ok {
-			return fmt.Sprintf("󰷉 Gollum event")
+			return fmt.Sprintf("󰷉 Wiki page event")
 		}
 	case "IssueCommentEvent":
 		if payload, ok := payload.(*github.IssueCommentEvent); ok {
