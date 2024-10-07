@@ -228,12 +228,12 @@ func fetchEvents(username, api string, count int, since time.Duration, filterTyp
 			}
 			allEvents = append(allEvents, event)
 			fetchedCount++
-			if 0 > count && fetchedCount >= count {
+			if 0 < count && fetchedCount >= count {
 				break
 			}
 		}
 
-		if (0 > count && fetchedCount >= count) || resp.NextPage == 0 {
+		if (0 < count && fetchedCount >= count) || resp.NextPage == 0 {
 			break
 		}
 		opt.Page = resp.NextPage
