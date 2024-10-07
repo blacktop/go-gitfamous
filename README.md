@@ -28,16 +28,27 @@ go install github.com/blacktop/go-gitfamous@latest
 
 Or download the latest [release](https://github.com/blacktop/go-gitfamous/releases/latest)
 
-### Usage
+### Run
 
 ```bash
-gitfamous <username>
-```   
+> gitfamous --help
 
-<!-- Fill this out -->
+Github Event Tracker TUI
+
+Usage:
+  gitfamous <username> [flags]
+
+Flags:
+  -t, --api string       Github API Token
+  -c, --count int        Number of events to fetch
+  -f, --filter strings   Comma-separated list of event types to display
+  -h, --help             help for gitfamous
+  -s, --since string     Limit events to those after the specified amount of time (e.g. 1h, 1d, 1w)
+  -V, --verbose          Verbose output
+```   
 
 ![demo](vhs.gif)
 
 ## License
 
-MIT Copyright (c) <YEAR> **blacktop**
+MIT Copyright (c) 2024 **blacktop**

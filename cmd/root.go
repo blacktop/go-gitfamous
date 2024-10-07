@@ -101,7 +101,7 @@ func parseExtendedDuration(input string) (time.Duration, error) {
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "gitfamous",
+	Use:   "gitfamous <username>",
 	Short: "Github Event Tracker TUI",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
