@@ -283,11 +283,11 @@ func getEventDescription(event *github.Event) string {
 			default:
 				icon = ""
 			}
-			return fmt.Sprintf("%s Created %s (%s)", icon, *createEvent.RefType, *createEvent.Ref)
+			return fmt.Sprintf("%s Created %s (%s)", icon, createEvent.GetRefType(), createEvent.GetRef())
 		}
 	case "DeleteEvent":
 		if deleteEvent, ok := payload.(*github.DeleteEvent); ok {
-			return fmt.Sprintf("󰆴 Deleted %s (%s)", *deleteEvent.Ref, *deleteEvent.RefType)
+			return fmt.Sprintf("󰆴 Deleted %s (%s)", deleteEvent.GetRefType(), deleteEvent.GetRef())
 		}
 	case "ForkEvent":
 		if _, ok := payload.(*github.ForkEvent); ok {
@@ -331,8 +331,8 @@ func getEventDescription(event *github.Event) string {
 		}
 	case "PushEvent":
 		if pushEvent, ok := payload.(*github.PushEvent); ok {
-			if len(pushEvent.Commits) > 0 {
-				return fmt.Sprintf(" Pushed %d commit(s) to %s: %#v", len(pushEvent.Commits), *pushEvent.Ref, pushEvent.Commits[0].GetMessage())
+			if len(pushEvent.GetCommits()) > 0 {
+				return fmt.Sprintf(" Pushed %d commit(s) to %s: %#v", len(pushEvent.GetCommits()), pushEvent.GetRef(), pushEvent.GetCommits()[0].GetMessage())
 			}
 		}
 	case "ReleaseEvent":
@@ -341,7 +341,7 @@ func getEventDescription(event *github.Event) string {
 		}
 	case "SponsorshipEvent":
 		if payload, ok := payload.(*github.SponsorshipEvent); ok {
-			return fmt.Sprintf(" Sponsorship event on %s", payload.Repository)
+			return fmt.Sprintf(" Sponsorship event on %s", payload.GetRepository())
 		}
 	case "WatchEvent":
 		if _, ok := payload.(*github.WatchEvent); ok {
