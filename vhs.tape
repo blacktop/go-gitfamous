@@ -46,7 +46,7 @@ Output vhs.webm
 
 Set FontSize 22
 Set Width 1400
-Set Height 500
+Set Height 600
 Set PlaybackSpeed 1
 
 Type "gitfamous apple-oss-distributions --count 10"
