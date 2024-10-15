@@ -23,6 +23,12 @@ There are many *kinds* of being famous. This is just a very nerdy one. 🤓
 ### Install
 
 ```bash
+brew install blacktop/tap/gitfamous
+```
+
+Or
+
+```bash
 go install github.com/blacktop/go-gitfamous@latest
 ```
 
