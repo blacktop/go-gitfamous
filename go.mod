@@ -1,7 +1,6 @@
 module github.com/blacktop/go-gitfamous
 
 go 1.23
-
 require (
 	github.com/charmbracelet/bubbles v0.20.0
 	github.com/charmbracelet/bubbletea v1.3.4
@@ -10,7 +9,7 @@ require (
 	github.com/dustin/go-humanize v1.0.1
 	github.com/google/go-github/v66 v66.0.0
 	github.com/spf13/cobra v1.9.1
-	golang.org/x/term v0.28.0
+	golang.org/x/term v0.30.0
 )
 
 require (
@@ -32,6 +31,6 @@ require (
 	github.com/spf13/pflag v1.0.6 // indirect
 	golang.org/x/exp v0.0.0-20241108190413-2d47ceb2692f // indirect
 	golang.org/x/sync v0.11.0 // indirect
-	golang.org/x/sys v0.30.0 // indirect
+	golang.org/x/sys v0.31.0 // indirect
 	golang.org/x/text v0.20.0 // indirect
 )
