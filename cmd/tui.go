@@ -53,6 +53,53 @@ var baseTableStyle = lipgloss.NewStyle().
 	BorderStyle(lipgloss.NormalBorder()).
 	BorderForeground(lipgloss.Color("240"))
 
+// Multi-user model types
+type tabState int
+
+const (
+	TabLoading tabState = iota
+	TabLoaded
+	TabError
+)
+
+type userTab struct {
+	username    string
+	apiToken    string
+	events      []eventItem
+	table       table.Model
+	err         error
+	state       tabState
+	count       int
+	since       time.Duration
+	filterTypes []string
+	tableHeight int
+}
+
+type multiUserModel struct {
+	tabs      []userTab
+	activeTab int
+	config    *Config
+}
+
+// Multi-user message types
+type fetchEventsForUserMsg struct {
+	userIndex int
+	events    []eventItem
+	err       error
+}
+
+var tabStyle = lipgloss.NewStyle().
+	Padding(0, 2).
+	Margin(0, 1)
+
+var activeTabStyle = tabStyle.
+	Foreground(lipgloss.Color("229")).
+	Background(lipgloss.Color("57")).
+	Bold(true)
+
+var inactiveTabStyle = tabStyle.
+	Foreground(lipgloss.Color("240"))
+
 func initialModel(username, apiToken string, count int, since time.Duration, filterTypes []string) model {
 	return model{
 		username:    username,

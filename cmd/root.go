@@ -101,52 +101,88 @@ func parseExtendedDuration(input string) (time.Duration, error) {
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "gitfamous <username>",
+	Use:   "gitfamous [username]",
 	Short: "Github Event Tracker TUI",
-	Args:  cobra.ExactArgs(1),
+	Args:  cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		if verbose {
 			log.SetLevel(log.DebugLevel)
 		}
-		// Retrieve GitHub token
-		if githubToken == "" {
-			githubToken = os.Getenv("GITHUB_TOKEN")
-			if githubToken == "" {
-				githubToken = os.Getenv("GITHUB_API_TOKEN")
-			}
-		}
-		if githubToken == "" {
-			logger.Error("Github API token is required")
-			os.Exit(1)
-		}
-		var sinceDuration time.Duration
-		if since == "" {
-			sinceDuration = 0
-		} else {
-			var err error
-			sinceDuration, err = parseExtendedDuration(since)
-			if err != nil {
-				logger.Error("parsing since duration", "error", err)
+
+		// Determine mode: single user or multi-user from config
+		var useConfig bool
+		var username string
+
+		if len(args) == 0 {
+			// No username provided - check for config
+			if configExists() {
+				useConfig = true
+			} else {
+				logger.Error("No username provided and no config file found")
+				logger.Info("Either provide a username or create a config file at ~/.config/gitfamous/config.yml")
 				os.Exit(1)
 			}
-		}
-		for _, f := range filterTypes {
-			if !slices.Contains(validEventTypes, f) {
-				logger.Warn("Invalid event type in --filter:", f)
-			}
+		} else {
+			// Username provided - use single user mode
+			username = args[0]
+			useConfig = false
 		}
 
-		// Start the TUI application
-		p := tea.NewProgram(initialModel(args[0], githubToken, eventCount, sinceDuration, filterTypes), tea.WithAltScreen())
-		// p := tea.NewProgram(initialModel(args[0], githubToken))
-		if m, err := p.Run(); err != nil {
-			logger.Error("running gitfamous", "error", err)
-			os.Exit(1)
+		if useConfig {
+			// Multi-user mode with config
+			config, err := loadConfig()
+			if err != nil {
+				logger.Error("Failed to load config", "error", err)
+				os.Exit(1)
+			}
+
+			// Start multi-user TUI
+			p := tea.NewProgram(initialMultiUserModel(config), tea.WithAltScreen())
+			if _, err := p.Run(); err != nil {
+				logger.Error("running gitfamous", "error", err)
+				os.Exit(1)
+			}
 		} else {
-			if m, ok := m.(model); ok {
-				if m.err != nil {
-					logger.Error(m.err)
-					return
+			// Single user mode (existing behavior)
+			// Retrieve GitHub token
+			if githubToken == "" {
+				githubToken = os.Getenv("GITHUB_TOKEN")
+				if githubToken == "" {
+					githubToken = os.Getenv("GITHUB_API_TOKEN")
+				}
+			}
+			if githubToken == "" {
+				logger.Error("Github API token is required")
+				os.Exit(1)
+			}
+			var sinceDuration time.Duration
+			if since == "" {
+				sinceDuration = 0
+			} else {
+				var err error
+				sinceDuration, err = parseExtendedDuration(since)
+				if err != nil {
+					logger.Error("parsing since duration", "error", err)
+					os.Exit(1)
+				}
+			}
+			for _, f := range filterTypes {
+				if !slices.Contains(validEventTypes, f) {
+					logger.Warn("Invalid event type in --filter:", f)
+				}
+			}
+
+			// Start single-user TUI
+			p := tea.NewProgram(initialModel(username, githubToken, eventCount, sinceDuration, filterTypes), tea.WithAltScreen())
+			if m, err := p.Run(); err != nil {
+				logger.Error("running gitfamous", "error", err)
+				os.Exit(1)
+			} else {
+				if m, ok := m.(model); ok {
+					if m.err != nil {
+						logger.Error(m.err)
+						return
+					}
 				}
 			}
 		}

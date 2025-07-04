@@ -27,3 +27,8 @@ go.work.sum
 # misc
 dist/
 .DS_Store
+
+# AI
+.claude/
+CLAUDE.md
+gitfamous
