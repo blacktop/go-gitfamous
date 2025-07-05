@@ -36,6 +36,8 @@ Or download the latest [release](https://github.com/blacktop/go-gitfamous/releas
 
 ### Run
 
+#### Single User Mode
+
 ```bash
 > gitfamous --help
 
@@ -53,8 +55,32 @@ Flags:
   -V, --verbose          Verbose output
 ```   
 
+#### Multi-User Mode
+
+Create a configuration file at `~/.config/gitfamous/config.yml`:
+
+```yaml
+users:
+  - username: "user1"
+  - username: "user2"
+    token: "optional_user_specific_token"
+    
+default_settings:
+  count: 50
+  since: "1w"
+  filter: ["PushEvent", "PullRequestEvent", "CreateEvent"]
+```
+
+Then run gitfamous without any arguments:
+
+```bash
+> gitfamous
+```
+
+This will launch a tabbed interface where you can switch between users using arrow keys or j/l.
+
 ![demo](vhs.gif)
 
 ## License
 
-MIT Copyright (c) 2024 **blacktop**
+MIT Copyright (c) 2024-2025 **blacktop**

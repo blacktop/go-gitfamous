@@ -32,3 +32,5 @@ dist/
 .claude/
 CLAUDE.md
 gitfamous
+*.webm
+*.mp4

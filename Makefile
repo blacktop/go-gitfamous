@@ -9,6 +9,12 @@ build:
 	@echo "🚀 Building Version $(shell svu current)"
 	go build -o gitfamous main.go
 
+.PHONY: vhs
+vhs:
+	@echo "📼 VHS Recording"
+	@echo "Please ensure you have the 'vhs' command installed."
+	vhs < vhs.tape
+
 .PHONY: release
 release:
 	@echo "🚀 Releasing Version $(shell svu current)"
