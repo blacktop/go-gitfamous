@@ -7,7 +7,7 @@ toolchain go1.24.1
 require (
 	github.com/caarlos0/log v0.5.1
 	github.com/charmbracelet/bubbles v0.21.0
-	github.com/charmbracelet/bubbletea v1.3.5
+	github.com/charmbracelet/bubbletea v1.3.6
 	github.com/charmbracelet/lipgloss v1.1.0
 	github.com/charmbracelet/log v0.4.2
 	github.com/dustin/go-humanize v1.0.1
